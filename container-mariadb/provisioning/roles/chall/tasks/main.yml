@@ -1,0 +1,36 @@
+- name: Remove the current docker
+  apt:
+    pkg:
+      - mariadb-client
+  become: true
+- name: Initializing Detete container
+  shell:
+    cmd: |
+      sudo docker stop mariaDB
+      sudo docker rm mariaDB
+      sudo docker volume rm mariaVOL
+  become: true
+- name: Set up database for init
+  shell:
+    cmd: |
+      sudo docker run -v mariaVOL:/var/lib/mysql -d --name mariaDB -e MYSQL_ROOT_PASSWORD=MariaPass -p 3306:3306 mariadb:latest
+  become: true
+- name: Initizalize data
+  shell:
+    cmd: |
+      sudo docker cp "{{ ansible_env.PWD }}/roles/chall/files/init.sql" mariaDB:/init.sql
+      sudo docker cp "{{ ansible_env.PWD }}/roles/chall/files/init.sh" mariaDB:/init.sh
+      sudo docker exec mariaDB sh -c 'chmod +x /init.sh'
+      sudo docker exec mariaDB sh -c 'bash /init.sh'
+  become: true
+- name: Detete container for generating database
+  shell:
+    cmd: |
+      sudo docker stop mariaDB
+      sudo docker rm mariaDB
+  become: true
+- name: Launch container
+  shell:
+    cmd: |
+      sudo docker run -m "6M" -v mariaVOL:/var/lib/mysql -d --name mariaDB -e MYSQL_ROOT_PASSWORD=MariaPass -p 3306:3306 mariadb:latest
+  become: true

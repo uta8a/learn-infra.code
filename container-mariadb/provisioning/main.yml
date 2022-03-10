@@ -1,0 +1,5 @@
+- name: Set up challenge environment
+  hosts: localhost
+  roles:
+    - docker
+    - chall

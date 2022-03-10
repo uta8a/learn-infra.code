@@ -1,0 +1,42 @@
+- name: Remove the current docker
+  apt:
+    pkg:
+      - docker
+      - docker-engine
+      - docker.io
+      - containerd
+      - runc
+    state: absent
+    purge: yes
+  become: yes
+- name: Install pkgs via apt
+  apt:
+    pkg:
+      - ca-certificates
+      - curl
+      - gnupg
+      - lsb-release
+  become: yes
+- name: Add key
+  apt_key:
+    url: https://download.docker.com/linux/ubuntu/gpg
+  become: yes
+
+- name: Add apt repository
+  apt_repository:
+    repo: "deb [arch=amd64] https://download.docker.com/linux/ubuntu {{ ansible_distribution_release }} stable"
+  become: yes
+- name: Install docker
+  apt:
+    pkg:
+      - docker-ce
+      - docker-ce-cli
+      - containerd.io
+    update_cache: yes
+  become: yes
+- name: Install Docker Compose
+  get_url:
+    url: "https://github.com/docker/compose/releases/download/v2.3.0/docker-compose-linux-{{ ansible_architecture }}"
+    dest: /usr/local/bin/docker-compose
+    mode: 0755
+  become: yes
