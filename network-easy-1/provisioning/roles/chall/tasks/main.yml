@@ -1,0 +1,13 @@
+- name: Initializing Detete container
+  shell:
+    cmd: |
+      sudo docker stop easy-net
+      sudo docker rm easy-net
+  become: true
+  failed_when: echo 'there is no easy-net container'
+  ignore_errors: yes
+- name: Set up challenge container
+  shell:
+    cmd: |
+      sudo docker run -dit --network none --name easy-net alpine:latest ash
+  become: true
