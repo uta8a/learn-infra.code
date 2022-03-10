@@ -10,6 +10,8 @@
       sudo docker rm mariaDB
       sudo docker volume rm mariaVOL
   become: true
+  failed_when: echo 'there is no mariaDB container'
+  ignore_errors: yes
 - name: Set up database for init
   shell:
     cmd: |
