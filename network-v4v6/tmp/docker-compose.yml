@@ -1,0 +1,8 @@
+version: "3.9"
+services:
+  box:
+    image: busybox
+networks:
+  default:
+    external:
+      name: my-pre-existing-network
